@@ -1,3 +1,0 @@
-This is a sample upload file
-to test the upload functionality of the system
-Multiple lines included.

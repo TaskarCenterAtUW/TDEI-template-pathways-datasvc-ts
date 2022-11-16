@@ -10,6 +10,10 @@ The project is built on top of NodeJS framework. All the regular nuances for a N
 | NodeJS | 16.17.0|
 | Typescript | 4.8.2 |
 
+### Local setup
+Step 1: 
+```docker compose up from root directory```
+
 
 #### Build and Test
 Follow the steps to install the node packages required for both building and running the application
