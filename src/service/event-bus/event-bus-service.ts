@@ -19,6 +19,7 @@ export class EventBusService implements IEventBusServiceInterface {
     private processUpload = async (messageReceived: any) => {
         var gtfsFlexUploadModel = messageReceived.body.data as GtfsPathwaysUploadModel;
         var pathwayVersions: PathwayVersions = new PathwayVersions();
+        pathwayVersions.uploaded_by = gtfsFlexUploadModel.user_id;
         this.copy(pathwayVersions, gtfsFlexUploadModel);
         console.log(`Received message: ${JSON.stringify(gtfsFlexUploadModel)}`);
         this.gtfsPathwayService.createAGtfsPathway(pathwayVersions);

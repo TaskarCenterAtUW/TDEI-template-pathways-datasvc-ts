@@ -2,7 +2,7 @@ import { Polygon } from "./polygon-model";
 
 
 export class GtfsPathwaysUploadModel {
-    id!: string;
+    user_id!: string;
     tdei_org_id!: string;
     tdei_station_id!: string;
     file_upload_path!: string;

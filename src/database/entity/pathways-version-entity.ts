@@ -16,8 +16,8 @@ export class PathwayVersions {
     @Column()
     file_upload_path: string = "";
 
-    // @Column()
-    // version: string = "";
+    @Column()
+    uploaded_by: string = "";
 
     @Column()
     collected_by: string = "";
