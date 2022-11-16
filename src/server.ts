@@ -1,7 +1,7 @@
 import App from './app';
 import dotenv from 'dotenv';
 import "reflect-metadata";
-import PostsController from './controller/gtfs-flex-controller';
+import GtfsPathwaysController from './controller/gtfs-pathways-controller';
 import { DataSource } from 'typeorm';
 import { AppDataSource } from './database/data-source';
 import HealthController from './controller/health-controller';
@@ -12,20 +12,17 @@ dotenv.config()
 
 const PORT: number = environment.appPort;
 
-const app = new App(
+new App(
     [
-        new PostsController(),
+        new GtfsPathwaysController(),
         new HealthController()
     ],
     PORT,
-);
-
-console.log("env", environment)
+).listen();
 
 //Initialize the database
 AppDataSource.initialize().then(async (dataSource: DataSource) => {
     console.log("Database initialized successfully !");
 }).catch(error => console.log("Error setting up the database : ", error))
 
-app.listen();
 

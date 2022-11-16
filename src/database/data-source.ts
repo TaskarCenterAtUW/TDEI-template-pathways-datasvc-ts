@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { FlexVersions } from "./entity/flex-version-entity";
+import { PathwayVersions } from "./entity/pathways-version-entity";
 import dotenv from 'dotenv';
 import { environment } from "../environment/environment";
 
@@ -15,7 +15,7 @@ export const AppDataSource = new DataSource({
     database: environment.database.database,
     synchronize: true,
     logging: true,
-    entities: [FlexVersions],
+    entities: [PathwayVersions],
     migrations: [],
     subscribers: [],
 })

@@ -15,6 +15,7 @@ export class AzureServiceBusProvider implements IEventBusProviderInterface {
         this.serviceBusReceiver = this.serviceBusClient.createReceiver(environment.eventBus.uploadTopic as string, environment.eventBus.uploadSubscription as string);
     }
 
+
     subscribe(handlers: EventBusMessageHandlers): void {
         this.serviceBusReceiver.subscribe({
             processMessage: handlers.processMessage,
