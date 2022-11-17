@@ -1,5 +1,6 @@
 import { PathwayVersions } from "../../database/entity/pathways-version-entity";
 import { GtfsPathwaysUploadModel } from "../../model/gtfs-pathways-upload-model";
+import { Utility } from "../../utility/utility";
 import { GtfsPathwaysService } from "../gtfs-pathways-service";
 import { IGtfsPathwaysService } from "../gtfs-pathways-service-interface";
 import { IEventBusServiceInterface } from "./interface/event-bus-service-interface";
@@ -20,19 +21,12 @@ export class EventBusService implements IEventBusServiceInterface {
         var gtfsFlexUploadModel = messageReceived.body.data as GtfsPathwaysUploadModel;
         var pathwayVersions: PathwayVersions = new PathwayVersions();
         pathwayVersions.uploaded_by = gtfsFlexUploadModel.user_id;
-        this.copy(pathwayVersions, gtfsFlexUploadModel);
+        Utility.copy<PathwayVersions>(pathwayVersions, gtfsFlexUploadModel);
         console.log(`Received message: ${JSON.stringify(gtfsFlexUploadModel)}`);
         this.gtfsPathwayService.createAGtfsPathway(pathwayVersions);
     };
 
-    private copy(target: any, source: any): any {
-        return Object.keys(target).forEach(key => {
-            if (source[key] != undefined) {
-                target[key] = source[key];
-            }
-        }
-        );
-    }
+
     // function to handle any errors
     private processUploadError = async (error: any) => {
         console.log(error);

@@ -6,7 +6,6 @@ export class GtfsPathwaysUploadModel {
     tdei_org_id!: string;
     tdei_station_id!: string;
     file_upload_path!: string;
-    version!: string;
     collected_by!: string;
     collection_date!: Date;
     collection_method!: string;
@@ -15,3 +14,4 @@ export class GtfsPathwaysUploadModel {
     data_source!: string;
     pathways_schema_version!: string;
 }
+

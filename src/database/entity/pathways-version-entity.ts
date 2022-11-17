@@ -5,7 +5,7 @@ import { Polygon } from "../../model/polygon-model";
 export class PathwayVersions {
 
     @PrimaryGeneratedColumn()
-    id!: number;
+    tdei_record_id!: number;
 
     @Column()
     tdei_org_id: string = "";
