@@ -4,9 +4,10 @@ import { IController } from "./interface/IController";
 import { GtfsPathwaysService } from "../service/gtfs-pathways-service";
 import { IGtfsPathwaysService } from "../service/gtfs-pathways-service-interface";
 import { PathwaysQueryParams } from "../model/gtfs-pathways-get-query-params";
+import { FileEntity } from "nodets-ms-core/lib/core/storage";
 
 class GtfsPathwaysController implements IController {
-    public path = '/gtfspathways';
+    public path = '/api/v1/gtfspathways';
     public router = express.Router();
     private gtfsPathwaysService!: IGtfsPathwaysService;
     constructor() {
@@ -32,18 +33,22 @@ class GtfsPathwaysController implements IController {
 
     getGtfsPathwayById = async (request: Request, response: express.Response) => {
 
-        // load a gtfsPathway by a given gtfsPathway id
-        const blobUrl = await this.gtfsPathwaysService.getGtfsPathwayById(request.params.id);
+        try {
+            // load a gtfsPathway by a given gtfsPathway id
+            let fileEntity: FileEntity = await this.gtfsPathwaysService.getGtfsPathwayById(request.params.id);
 
-        // if gtfsPathway was not found return 404 to the client
-        if (!blobUrl) {
+            response.header('Content-Type', fileEntity.mimeType);
+            response.header('Content-disposition', `attachment; filename=${fileEntity.fileName}`);
+            response.status(200);
+            (await fileEntity.getStream()).pipe(response);
+        } catch (error) {
+            console.log('Error while getting the file stream');
+            console.log(error);
+            // if gtfsPathway was not found return 404 to the client
             response.status(404);
             response.end();
             return;
         }
-
-        // return loaded gtfsPathway
-        response.send(blobUrl);
     }
 
     createAGtfsPathway = async (request: Request, response: express.Response) => {

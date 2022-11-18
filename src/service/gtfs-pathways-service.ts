@@ -1,3 +1,5 @@
+import { Core } from "nodets-ms-core";
+import { FileEntity } from "nodets-ms-core/lib/core/storage";
 import { Equal, FindOptionsWhere, Raw } from "typeorm";
 import { AppDataSource } from "../database/data-source";
 import { PathwayVersions } from "../database/entity/pathways-version-entity";
@@ -49,7 +51,7 @@ export class GtfsPathwaysService implements IGtfsPathwaysService {
         return Promise.resolve(list);
     }
 
-    async getGtfsPathwayById(id: string): Promise<string | null> {
+    async getGtfsPathwayById(id: string): Promise<FileEntity> {
         // get a gtfsPathway repository to perform operations with gtfsPathway
         const gtfsPathwayRepository = AppDataSource.getRepository(PathwayVersions);
 
@@ -59,13 +61,16 @@ export class GtfsPathwaysService implements IGtfsPathwaysService {
                 tdei_record_id: Number.parseInt(id)
             });
 
-        return Promise.resolve(gtfsPathway?.file_upload_path);
+        const storageClient = Core.getStorageClient();
+        if (storageClient == null) throw console.error("Storage not configured");
+        let url: string = decodeURIComponent(gtfsPathway?.file_upload_path);
+        return storageClient.getFileFromUrl(url);
     }
 
     async createAGtfsPathway(pathwayInfo: PathwayVersions): Promise<GtfsPathwaysDTO> {
         // get a gtfsPathway repository to perform operations with gtfsPathway
         const gtfsPathwayRepository = AppDataSource.getRepository(PathwayVersions);
-
+        pathwayInfo.file_upload_path = decodeURIComponent(pathwayInfo.file_upload_path);
         // create a real gtfsPathway object from gtfsPathway json object sent over http
         const newGtfsPathway = gtfsPathwayRepository.create(pathwayInfo);
 
