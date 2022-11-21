@@ -70,7 +70,7 @@ export class GtfsPathwaysService implements IGtfsPathwaysService {
     async createAGtfsPathway(pathwayInfo: PathwayVersions): Promise<GtfsPathwaysDTO> {
         // get a gtfsPathway repository to perform operations with gtfsPathway
         const gtfsPathwayRepository = AppDataSource.getRepository(PathwayVersions);
-        pathwayInfo.file_upload_path = decodeURIComponent(pathwayInfo.file_upload_path);
+        pathwayInfo.file_upload_path = decodeURIComponent(pathwayInfo.file_upload_path!);
         // create a real gtfsPathway object from gtfsPathway json object sent over http
         const newGtfsPathway = gtfsPathwayRepository.create(pathwayInfo);
 

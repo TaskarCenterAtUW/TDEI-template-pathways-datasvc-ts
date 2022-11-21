@@ -5,6 +5,9 @@ import { GtfsPathwaysService } from "../gtfs-pathways-service";
 import { IGtfsPathwaysService } from "../gtfs-pathways-service-interface";
 import { IEventBusServiceInterface } from "./interface/event-bus-service-interface";
 import { AzureServiceBusProvider } from "./provider/azure-service-bus-provider";
+import {
+    validate
+} from 'class-validator';
 
 export class EventBusService implements IEventBusServiceInterface {
     private azureServiceBusProvider!: AzureServiceBusProvider;
@@ -21,9 +24,17 @@ export class EventBusService implements IEventBusServiceInterface {
         var gtfsFlexUploadModel = messageReceived.body.data as GtfsPathwaysUploadModel;
         var pathwayVersions: PathwayVersions = new PathwayVersions();
         pathwayVersions.uploaded_by = gtfsFlexUploadModel.user_id;
-        Utility.copy<PathwayVersions>(pathwayVersions, gtfsFlexUploadModel);
         console.log(`Received message: ${JSON.stringify(gtfsFlexUploadModel)}`);
-        this.gtfsPathwayService.createAGtfsPathway(pathwayVersions);
+        Utility.copy<PathwayVersions>(pathwayVersions, gtfsFlexUploadModel);
+
+        validate(pathwayVersions).then(errors => {
+            // errors is an array of validation errors
+            if (errors.length > 0) {
+                console.log('Upload pathways file metadata information failed validation. errors: ', errors);
+            } else {
+                this.gtfsPathwayService.createAGtfsPathway(pathwayVersions);
+            }
+        });
     };
 
 

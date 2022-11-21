@@ -1,5 +1,6 @@
 
 export class GtfsPathwaysDTO {
+    tdei_record_id: string = "";
     tdei_org_id: string = "";
     tdei_station_id: string = "";
     collected_by: string = "";
