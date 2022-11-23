@@ -68,16 +68,22 @@ export class GtfsPathwaysService implements IGtfsPathwaysService {
     }
 
     async createAGtfsPathway(pathwayInfo: PathwayVersions): Promise<GtfsPathwaysDTO> {
-        // get a gtfsPathway repository to perform operations with gtfsPathway
-        const gtfsPathwayRepository = AppDataSource.getRepository(PathwayVersions);
-        pathwayInfo.file_upload_path = decodeURIComponent(pathwayInfo.file_upload_path!);
-        // create a real gtfsPathway object from gtfsPathway json object sent over http
-        const newGtfsPathway = gtfsPathwayRepository.create(pathwayInfo);
+        try {
+            // get a gtfsPathway repository to perform operations with gtfsPathway
+            const gtfsPathwayRepository = AppDataSource.getRepository(PathwayVersions);
+            pathwayInfo.file_upload_path = decodeURIComponent(pathwayInfo.file_upload_path!);
+            // create a real gtfsPathway object from gtfsPathway json object sent over http
+            const newGtfsPathway = gtfsPathwayRepository.create(pathwayInfo);
 
-        // save received gtfsPathway
-        await gtfsPathwayRepository.save(newGtfsPathway);
-        let pathway: GtfsPathwaysDTO = Utility.copy<GtfsPathwaysDTO>(new GtfsPathwaysDTO(), newGtfsPathway);
+            // save received gtfsPathway
+            await gtfsPathwayRepository.save(newGtfsPathway);
+            let pathway: GtfsPathwaysDTO = Utility.copy<GtfsPathwaysDTO>(new GtfsPathwaysDTO(), newGtfsPathway);
 
-        return Promise.resolve(pathway);
+            return Promise.resolve(pathway);
+        } catch (error) {
+            console.log("Error saving the pathways version", error);
+            return Promise.reject(error);
+        }
+
     }
 }
