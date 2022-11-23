@@ -2,7 +2,7 @@ FROM node:16.17-alpine
 
 WORKDIR /usr
 COPY package.json ./
-COPY .env ./
+COPY .env* ./
 COPY tsconfig.json ./
 COPY src ./src
 RUN ls -a
