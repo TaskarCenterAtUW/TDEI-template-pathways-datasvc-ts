@@ -52,8 +52,15 @@ class GtfsPathwaysController implements IController {
     }
 
     createAGtfsPathway = async (request: Request, response: express.Response) => {
-        var newGtfsPathway = await this.gtfsPathwaysService.createAGtfsPathway(request.body);
 
+        var newGtfsPathway = await this.gtfsPathwaysService.createAGtfsPathway(request.body).catch((error: any) => {
+            console.log('Error saving the pathways version');
+            console.log(error);
+            // if gtfsPathway was not found return 404 to the client
+            response.status(500);
+            response.end();
+            return;
+        });
         // return saved gtfsPathway back
         response.send(newGtfsPathway);
     }
