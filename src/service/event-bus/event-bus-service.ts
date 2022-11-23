@@ -4,37 +4,44 @@ import { Utility } from "../../utility/utility";
 import { GtfsPathwaysService } from "../gtfs-pathways-service";
 import { IGtfsPathwaysService } from "../gtfs-pathways-service-interface";
 import { IEventBusServiceInterface } from "./interface/event-bus-service-interface";
-import { AzureServiceBusProvider } from "./provider/azure-service-bus-provider";
-import {
-    validate
-} from 'class-validator';
+import { validate } from 'class-validator';
+import { AzureQueueConfig } from "nodets-ms-core/lib/core/queue/providers/azure-queue-config";
+import { environment } from "../../environment/environment";
+import { Core } from "nodets-ms-core";
 
 export class EventBusService implements IEventBusServiceInterface {
-    private azureServiceBusProvider!: AzureServiceBusProvider;
+    private queueConfig: AzureQueueConfig;
     private gtfsPathwayService!: IGtfsPathwaysService;
 
     constructor() {
-        this.azureServiceBusProvider = new AzureServiceBusProvider();
+        this.queueConfig = new AzureQueueConfig();
         this.gtfsPathwayService = new GtfsPathwaysService();
-        this.azureServiceBusProvider.initialize();
+        this.queueConfig.connectionString = environment.eventBus.connectionString as string;
     }
 
     // function to handle messages
     private processUpload = async (messageReceived: any) => {
-        var gtfsFlexUploadModel = messageReceived.body.data as GtfsPathwaysUploadModel;
-        var pathwayVersions: PathwayVersions = new PathwayVersions();
-        pathwayVersions.uploaded_by = gtfsFlexUploadModel.user_id;
-        console.log(`Received message: ${JSON.stringify(gtfsFlexUploadModel)}`);
-        Utility.copy<PathwayVersions>(pathwayVersions, gtfsFlexUploadModel);
+        try {
+            if (!messageReceived.data) return;
+            if (!messageReceived.data.is_valid) return;
 
-        validate(pathwayVersions).then(errors => {
-            // errors is an array of validation errors
-            if (errors.length > 0) {
-                console.log('Upload pathways file metadata information failed validation. errors: ', errors);
-            } else {
-                this.gtfsPathwayService.createAGtfsPathway(pathwayVersions);
-            }
-        });
+            var gtfsFlexUploadModel = messageReceived.data as GtfsPathwaysUploadModel;
+            var pathwayVersions: PathwayVersions = new PathwayVersions();
+            pathwayVersions.uploaded_by = gtfsFlexUploadModel.user_id;
+            console.log(`Received message: ${JSON.stringify(gtfsFlexUploadModel)}`);
+            Utility.copy<PathwayVersions>(pathwayVersions, gtfsFlexUploadModel);
+
+            validate(pathwayVersions).then(errors => {
+                // errors is an array of validation errors
+                if (errors.length > 0) {
+                    console.log('Upload pathways file metadata information failed validation. errors: ', errors);
+                } else {
+                    this.gtfsPathwayService.createAGtfsPathway(pathwayVersions);
+                }
+            });
+        } catch (error) {
+            console.log("Error processing the upload message : error ", error, "message: ", messageReceived);
+        }
     };
 
 
@@ -44,9 +51,10 @@ export class EventBusService implements IEventBusServiceInterface {
     };
 
     subscribeUpload(): void {
-        this.azureServiceBusProvider.subscribe({
-            processMessage: this.processUpload,
-            processError: this.processUploadError
-        });
+        Core.getTopic(environment.eventBus.uploadTopic as string,
+            this.queueConfig).subscribe(environment.eventBus.uploadSubscription as string, {
+                onReceive: this.processUpload,
+                onError: this.processUploadError
+            });
     }
 }
