@@ -18,4 +18,5 @@ export const AppDataSource = new DataSource({
     entities: [PathwayVersions],
     migrations: [],
     subscribers: [],
+    ssl: environment.database.ssl
 })
