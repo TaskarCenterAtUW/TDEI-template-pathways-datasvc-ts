@@ -1,5 +1,3 @@
-import { Polygon } from "./polygon-model";
-
 
 export class GtfsPathwaysUploadModel {
     user_id!: string;

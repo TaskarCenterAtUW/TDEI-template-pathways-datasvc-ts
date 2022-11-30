@@ -25,11 +25,11 @@ export class EventBusService implements IEventBusServiceInterface {
             if (!messageReceived.data) return;
             if (!messageReceived.data.is_valid) return;
 
-            var gtfsFlexUploadModel = messageReceived.data as GtfsPathwaysUploadModel;
+            var gtfsPathwaysUploadModel = messageReceived.data as GtfsPathwaysUploadModel;
             var pathwayVersions: PathwayVersions = new PathwayVersions();
-            pathwayVersions.uploaded_by = gtfsFlexUploadModel.user_id;
-            console.log(`Received message: ${JSON.stringify(gtfsFlexUploadModel)}`);
-            Utility.copy<PathwayVersions>(pathwayVersions, gtfsFlexUploadModel);
+            pathwayVersions.uploaded_by = gtfsPathwaysUploadModel.user_id;
+            console.log(`Received message: ${JSON.stringify(gtfsPathwaysUploadModel)}`);
+            Utility.copy<PathwayVersions>(pathwayVersions, gtfsPathwaysUploadModel);
 
             validate(pathwayVersions).then(errors => {
                 // errors is an array of validation errors

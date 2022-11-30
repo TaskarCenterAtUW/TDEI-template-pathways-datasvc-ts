@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import { Polygon } from "../../model/polygon-model";
 import { IsNotEmpty } from 'class-validator';
 
 @Entity()
