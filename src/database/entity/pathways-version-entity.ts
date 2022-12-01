@@ -5,7 +5,14 @@ import { IsNotEmpty } from 'class-validator';
 export class PathwayVersions {
 
     @PrimaryGeneratedColumn()
-    tdei_record_id!: number;
+    id!: number;
+
+    @Column()
+    @IsNotEmpty()
+    tdei_record_id: string = "";
+
+    @Column({ nullable: true, default: 0 })
+    confidence_level: number = 0;
 
     @Column()
     @IsNotEmpty()
