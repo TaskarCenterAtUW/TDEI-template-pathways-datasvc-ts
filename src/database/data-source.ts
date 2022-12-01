@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { PathwayVersions } from "./entity/pathways-version-entity";
 import dotenv from 'dotenv';
 import { environment } from "../environment/environment";
 
@@ -15,8 +14,8 @@ export const AppDataSource = new DataSource({
     database: environment.database.database,
     synchronize: true,
     logging: true,
-    entities: [PathwayVersions],
-    migrations: [],
+    migrations: [__dirname + '/../../database/migrations/*.{ts,js}'],
+    entities: [__dirname + '/../database/entity/*.{ts,js}'],
     subscribers: [],
     ssl: environment.database.ssl
 })

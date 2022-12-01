@@ -58,7 +58,7 @@ export class GtfsPathwaysService implements IGtfsPathwaysService {
         // load a gtfsPathway by a given gtfsPathway id
         const gtfsPathway: PathwayVersions | any = await gtfsPathwayRepository.findOneBy(
             {
-                tdei_record_id: Number.parseInt(id)
+                tdei_record_id: id
             });
 
         const storageClient = Core.getStorageClient();
