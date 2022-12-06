@@ -24,7 +24,7 @@ describe("POST /api/v1/gtfspathways", () => {
             .spyOn(gtfsPathwaysService, "getAllGtfsPathway")
             .mockResolvedValueOnce(list);
 
-        const users = await gtfsPathwaysController.getAllGtfsPathway(mockRequest, mockResponse as Response);
+        await gtfsPathwaysController.getAllGtfsPathway(mockRequest, mockResponse as Response);
         expect(responseObj).toEqual(list);
         expect(spy).toHaveBeenCalledTimes(1);
         spy.mockRestore();

@@ -16,7 +16,7 @@ describe("POST /health/ping", () => {
                 responseObj = result;
             })
         };
-        const users = await healthController.getping(mockRequest, mockResponse as Response);
+        await healthController.getping(mockRequest, mockResponse as Response);
         expect(responseObj).toEqual("I'm healthy !!");
     });
 });
