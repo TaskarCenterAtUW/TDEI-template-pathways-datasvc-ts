@@ -3,13 +3,12 @@ import express from "express";
 import bodyParser from "body-parser";
 import { IController } from "./controller/interface/IController";
 import helmet from "helmet";
-import { EventBusService } from "./service/event-bus/event-bus-service";
 import { Core } from "nodets-ms-core";
+import eventBusService from "./service/event-bus/event-bus-service";
 
 class App {
     public app: express.Application;
     public port: number;
-    eventBusService!: EventBusService;
 
     constructor(controllers: IController[], port: number) {
         this.app = express();
@@ -26,8 +25,7 @@ class App {
     }
 
     private subscribeUpload() {
-        this.eventBusService = new EventBusService();
-        this.eventBusService.subscribeUpload();
+        eventBusService.subscribeUpload();
     }
 
     private initializeMiddlewares() {
