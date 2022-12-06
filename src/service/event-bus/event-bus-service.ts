@@ -1,7 +1,7 @@
 import { PathwayVersions } from "../../database/entity/pathways-version-entity";
 import { GtfsPathwaysUploadModel } from "../../model/gtfs-pathways-upload-model";
 import { Utility } from "../../utility/utility";
-import { GtfsPathwaysService } from "../gtfs-pathways-service";
+import gtfsPathwaysService from "../gtfs-pathways-service";
 import { IGtfsPathwaysService } from "../gtfs-pathways-service-interface";
 import { IEventBusServiceInterface } from "./interface/event-bus-service-interface";
 import { validate } from 'class-validator';
@@ -9,21 +9,23 @@ import { AzureQueueConfig } from "nodets-ms-core/lib/core/queue/providers/azure-
 import { environment } from "../../environment/environment";
 import { Core } from "nodets-ms-core";
 
-export class EventBusService implements IEventBusServiceInterface {
+class EventBusService implements IEventBusServiceInterface {
     private queueConfig: AzureQueueConfig;
-    private gtfsPathwayService!: IGtfsPathwaysService;
+    //private gtfsPathwayService!: IGtfsPathwaysService;
 
     constructor() {
         this.queueConfig = new AzureQueueConfig();
-        this.gtfsPathwayService = new GtfsPathwaysService();
+        // this.gtfsPathwayService = new GtfsPathwaysService();
         this.queueConfig.connectionString = environment.eventBus.connectionString as string;
     }
 
     // function to handle messages
     private processUpload = async (messageReceived: any) => {
         try {
-            if (!messageReceived.data) return;
-            if (!messageReceived.data.is_valid) return;
+            if (!messageReceived.data || !messageReceived.data.is_valid) {
+                console.log("Not valid information received :", messageReceived);
+                return;
+            }
 
             var gtfsPathwaysUploadModel = messageReceived.data as GtfsPathwaysUploadModel;
             var pathwayVersions: PathwayVersions = new PathwayVersions();
@@ -36,7 +38,7 @@ export class EventBusService implements IEventBusServiceInterface {
                 if (errors.length > 0) {
                     console.log('Upload pathways file metadata information failed validation. errors: ', errors);
                 } else {
-                    this.gtfsPathwayService.createAGtfsPathway(pathwayVersions).catch((error: any) => {
+                    gtfsPathwaysService.createAGtfsPathway(pathwayVersions).catch((error: any) => {
                         console.log('Error saving the pathways version');
                         console.log(error);
                     });;
@@ -55,9 +57,13 @@ export class EventBusService implements IEventBusServiceInterface {
 
     subscribeUpload(): void {
         Core.getTopic(environment.eventBus.uploadTopic as string,
-            this.queueConfig).subscribe(environment.eventBus.uploadSubscription as string, {
+            this.queueConfig)
+            .subscribe(environment.eventBus.uploadSubscription as string, {
                 onReceive: this.processUpload,
                 onError: this.processUploadError
             });
     }
 }
+
+const eventBusService = new EventBusService();
+export default eventBusService;

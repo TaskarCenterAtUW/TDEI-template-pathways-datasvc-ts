@@ -8,7 +8,7 @@ import { PathwaysQueryParams } from "../model/gtfs-pathways-get-query-params";
 import { Utility } from "../utility/utility";
 import { IGtfsPathwaysService } from "./gtfs-pathways-service-interface";
 
-export class GtfsPathwaysService implements IGtfsPathwaysService {
+class GtfsPathwaysService implements IGtfsPathwaysService {
     constructor() {
 
     }
@@ -87,3 +87,6 @@ export class GtfsPathwaysService implements IGtfsPathwaysService {
 
     }
 }
+
+const gtfsPathwaysService = new GtfsPathwaysService();
+export default gtfsPathwaysService;

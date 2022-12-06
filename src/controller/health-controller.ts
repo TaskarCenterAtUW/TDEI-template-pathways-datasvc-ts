@@ -13,11 +13,11 @@ class HealthController implements IController {
         this.router.get(`${this.path}/ping`, this.getping);
     }
 
-    getping = async (request: Request, response: express.Response) => {
-
+    public getping = async (request: Request, response: express.Response) => {
         // return loaded posts
         response.send("I'm healthy !!");
     }
 }
 
-export default HealthController;
+const healthController = new HealthController();
+export default healthController;
