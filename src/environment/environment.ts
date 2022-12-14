@@ -8,9 +8,9 @@ dotenv.config();
 export const environment = {
     appName: process.env.npm_package_name,
     eventBus: {
-        connectionString: process.env.EVENTBUSCONNECTION,
-        uploadTopic: process.env.UPLOADTOPIC,
-        uploadSubscription: process.env.UPLOADSUBSCRIPTION
+        connectionString: process.env.EVENT_BUS_CONNECTION,
+        validationTopic: process.env.VALIDATION_TOPIC,
+        validationSubscription: process.env.VALIDATION_SUBSCRIPTION
     },
     database: {
         username: process.env.POSTGRES_USER,
