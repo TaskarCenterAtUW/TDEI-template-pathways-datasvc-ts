@@ -1,18 +1,16 @@
 import { Request } from "express";
 import express from "express";
 import { IController } from "./interface/IController";
-import { GtfsPathwaysService } from "../service/gtfs-pathways-service";
-import { IGtfsPathwaysService } from "../service/gtfs-pathways-service-interface";
 import { PathwaysQueryParams } from "../model/gtfs-pathways-get-query-params";
 import { FileEntity } from "nodets-ms-core/lib/core/storage";
+import gtfsPathwaysService from "../service/gtfs-pathways-service";
+import { BadRequest } from "../model/http/http-responses";
 
 class GtfsPathwaysController implements IController {
     public path = '/api/v1/gtfspathways';
     public router = express.Router();
-    private gtfsPathwaysService!: IGtfsPathwaysService;
     constructor() {
         this.intializeRoutes();
-        this.gtfsPathwaysService = new GtfsPathwaysService();
     }
 
     public intializeRoutes() {
@@ -22,11 +20,10 @@ class GtfsPathwaysController implements IController {
     }
 
     getAllGtfsPathway = async (request: Request, response: express.Response) => {
-        var params: PathwaysQueryParams = JSON.parse(JSON.stringify(request.query));
+        var params: PathwaysQueryParams = new PathwaysQueryParams(JSON.parse(JSON.stringify(request.query)));
 
         // load gtfsPathways
-        const gtfsPathways = await this.gtfsPathwaysService.getAllGtfsPathway(params);
-
+        const gtfsPathways = await gtfsPathwaysService.getAllGtfsPathway(params);
         // return loaded gtfsPathways
         response.send(gtfsPathways);
     }
@@ -35,7 +32,7 @@ class GtfsPathwaysController implements IController {
 
         try {
             // load a gtfsPathway by a given gtfsPathway id
-            let fileEntity: FileEntity = await this.gtfsPathwaysService.getGtfsPathwayById(request.params.id);
+            let fileEntity: FileEntity = await gtfsPathwaysService.getGtfsPathwayById(request.params.id);
 
             response.header('Content-Type', fileEntity.mimeType);
             response.header('Content-disposition', `attachment; filename=${fileEntity.fileName}`);
@@ -44,19 +41,24 @@ class GtfsPathwaysController implements IController {
         } catch (error) {
             console.log('Error while getting the file stream');
             console.log(error);
-            // if gtfsPathway was not found return 404 to the client
-            response.status(404);
-            response.end();
-            return;
+            BadRequest(response);
         }
     }
 
     createAGtfsPathway = async (request: Request, response: express.Response) => {
-        var newGtfsPathway = await this.gtfsPathwaysService.createAGtfsPathway(request.body);
 
+        var newGtfsPathway = await gtfsPathwaysService.createAGtfsPathway(request.body).catch((error: any) => {
+            console.log('Error saving the pathways version');
+            console.log(error);
+            // if gtfsPathway was not found return 404 to the client
+            response.status(500);
+            response.end();
+            return;
+        });
         // return saved gtfsPathway back
         response.send(newGtfsPathway);
     }
 }
 
-export default GtfsPathwaysController;
+const gtfsPathwaysController = new GtfsPathwaysController();
+export default gtfsPathwaysController;

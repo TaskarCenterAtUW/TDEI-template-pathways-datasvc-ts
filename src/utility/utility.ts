@@ -24,8 +24,7 @@ export class Utility {
             if (source[key] != undefined) {
                 target[key as keyof Object] = source[key];
             }
-        }
-        );
+        });
         return target;
     }
 }
