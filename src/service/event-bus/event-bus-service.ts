@@ -28,11 +28,10 @@ class EventBusService implements IEventBusServiceInterface {
             }
 
             var gtfsPathwaysUploadModel = messageReceived.data as GtfsPathwaysUploadModel;
-            var pathwayVersions: PathwayVersions = new PathwayVersions();
+            var pathwayVersions: PathwayVersions = new PathwayVersions(gtfsPathwaysUploadModel);
             pathwayVersions.uploaded_by = gtfsPathwaysUploadModel.user_id;
             console.log(`Received message: ${JSON.stringify(gtfsPathwaysUploadModel)}`);
-            Utility.copy<PathwayVersions>(pathwayVersions, gtfsPathwaysUploadModel);
-
+            //Utility.copy<PathwayVersions>(pathwayVersions, gtfsPathwaysUploadModel);
             validate(pathwayVersions).then(errors => {
                 // errors is an array of validation errors
                 if (errors.length > 0) {
