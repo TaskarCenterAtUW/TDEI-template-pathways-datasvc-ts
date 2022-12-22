@@ -4,14 +4,13 @@ import { IController } from "./interface/IController";
 import { PathwaysQueryParams } from "../model/gtfs-pathways-get-query-params";
 import { FileEntity } from "nodets-ms-core/lib/core/storage";
 import gtfsPathwaysService from "../service/gtfs-pathways-service";
+import { BadRequest } from "../model/http/http-responses";
 
 class GtfsPathwaysController implements IController {
     public path = '/api/v1/gtfspathways';
     public router = express.Router();
-    // private gtfsPathwaysService!: IGtfsPathwaysService;
     constructor() {
         this.intializeRoutes();
-        //this.gtfsPathwaysService = new GtfsPathwaysService();
     }
 
     public intializeRoutes() {
@@ -21,7 +20,7 @@ class GtfsPathwaysController implements IController {
     }
 
     getAllGtfsPathway = async (request: Request, response: express.Response) => {
-        var params: PathwaysQueryParams = JSON.parse(JSON.stringify(request.query));
+        var params: PathwaysQueryParams = new PathwaysQueryParams(JSON.parse(JSON.stringify(request.query)));
 
         // load gtfsPathways
         const gtfsPathways = await gtfsPathwaysService.getAllGtfsPathway(params);
@@ -42,10 +41,7 @@ class GtfsPathwaysController implements IController {
         } catch (error) {
             console.log('Error while getting the file stream');
             console.log(error);
-            // if gtfsPathway was not found return 404 to the client
-            response.status(404);
-            response.end();
-            return;
+            BadRequest(response);
         }
     }
 

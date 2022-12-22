@@ -12,5 +12,6 @@ export class GtfsPathwaysUploadModel {
     valid_to!: Date;
     data_source!: string;
     pathways_schema_version!: string;
+    polygon: any = {};
 }
 
