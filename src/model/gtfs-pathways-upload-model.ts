@@ -1,8 +1,7 @@
-import { Polygon } from "./polygon-model";
-
 
 export class GtfsPathwaysUploadModel {
     user_id!: string;
+    tdei_record_id!: string;
     tdei_org_id!: string;
     tdei_station_id!: string;
     file_upload_path!: string;
@@ -13,5 +12,6 @@ export class GtfsPathwaysUploadModel {
     valid_to!: Date;
     data_source!: string;
     pathways_schema_version!: string;
+    polygon: any = {};
 }
 

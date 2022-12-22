@@ -6,19 +6,19 @@ dotenv.config();
  * a required parameter since it is auto imported in the `tdei_logger.ts`
  */
 export const environment = {
-    queueName: "tdei-poc-queue",
-    storageContainerName: "tdei-storage-test",
     appName: process.env.npm_package_name,
     eventBus: {
-        connectionString: process.env.EventBusConnection,
-        uploadTopic: process.env.UploadTopic,
-        uploadSubscription: process.env.UploadSubscription
+        connectionString: process.env.EVENT_BUS_CONNECTION,
+        validationTopic: process.env.VALIDATION_TOPIC,
+        validationSubscription: process.env.VALIDATION_SUBSCRIPTION
     },
     database: {
         username: process.env.POSTGRES_USER,
+        host: process.env.POSTGRES_HOST,
         password: process.env.POSTGRES_PASSWORD,
         database: process.env.POSTGRES_DB,
-        port: parseInt(process.env.POSTGRES_PORT ?? ""),
+        ssl: Boolean(process.env.SSL),
+        port: parseInt(process.env.POSTGRES_PORT ?? "5432"),
     },
-    appPort: parseInt(process.env.APPLICATION_PORT as string)
+    appPort: parseInt(process.env.APPLICATION_PORT ?? "8080")
 }
