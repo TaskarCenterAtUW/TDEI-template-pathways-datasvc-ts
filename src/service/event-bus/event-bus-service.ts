@@ -37,7 +37,7 @@ class EventBusService implements IEventBusServiceInterface {
                 if (errors.length > 0) {
                     console.log('Upload pathways file metadata information failed validation. errors: ', errors);
                 } else {
-                    gtfsPathwaysService.createAGtfsPathway(pathwayVersions).catch((error: any) => {
+                    gtfsPathwaysService.createGtfsPathway(pathwayVersions).catch((error: any) => {
                         console.log('Error saving the pathways version');
                         console.log(error);
                     });;

@@ -17,4 +17,5 @@ CREATE TABLE IF NOT EXISTS public.pathway_versions
     updated_date timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     polygon polygon NOT NULL,
     CONSTRAINT "PK_dab47c971dc937ea4457fdc223c" PRIMARY KEY (id)
+     CONSTRAINT unq_record_id UNIQUE (tdei_record_id)
 )

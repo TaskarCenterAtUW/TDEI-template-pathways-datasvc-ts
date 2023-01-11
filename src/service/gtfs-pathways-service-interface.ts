@@ -6,5 +6,5 @@ import { PathwaysQueryParams } from "../model/gtfs-pathways-get-query-params";
 export interface IGtfsPathwaysService {
     getAllGtfsPathway(params: PathwaysQueryParams): Promise<GtfsPathwaysDTO[]>;
     getGtfsPathwayById(id: string): Promise<FileEntity>;
-    createAGtfsPathway(pathwayInfo: PathwayVersions): Promise<GtfsPathwaysDTO>;
+    createGtfsPathway(pathwayInfo: PathwayVersions): Promise<GtfsPathwaysDTO>;
 }
