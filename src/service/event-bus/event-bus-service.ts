@@ -1,8 +1,6 @@
 import { PathwayVersions } from "../../database/entity/pathways-version-entity";
 import { GtfsPathwaysUploadModel } from "../../model/gtfs-pathways-upload-model";
-import { Utility } from "../../utility/utility";
 import gtfsPathwaysService from "../gtfs-pathways-service";
-import { IGtfsPathwaysService } from "../gtfs-pathways-service-interface";
 import { IEventBusServiceInterface } from "./interface/event-bus-service-interface";
 import { validate } from 'class-validator';
 import { AzureQueueConfig } from "nodets-ms-core/lib/core/queue/providers/azure-queue-config";

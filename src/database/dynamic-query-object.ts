@@ -36,7 +36,7 @@ export class DynamicQueryObject {
         if (page_size == undefined)
             page_size = 10;
         let skip = page_no == 1 ? 0 : (page_no - 1) * page_size;
-        let take = page_size > 100 ? 100 : page_size;
+        let take = page_size > 50 ? 50 : page_size;
 
         this._limit = ` LIMIT $${this.paramCouter++}`;
         this.values.push(take);
